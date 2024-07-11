@@ -10,33 +10,49 @@ class ScreenOne extends StatefulWidget {
 
 class _ScreenOneState extends State<ScreenOne> {
 
-  final url = 'https://jsonplaceholder.typicode.com/posts';
 
-  void postData() async{
-  try{
+  final url = 'https://jsonplaceholder.typicode.com/posts';
+  String _data = '';
+
+ Future<void> postData() async{
+  
       final response = await post(Uri.parse(url), body: {
       'title' : 'Anything',
       'body' : 'Posting datas',
       'userId' : '1'
       }
-    
-    );
-    print(response.body);
-  }catch(er){
-
-  }
+      );
+      if(response.statusCode == 200 || response.statusCode == 201){
+        // print('Data posted successfully ${response.body}');
+        setState(() {
+          _data = 'Data created successfully ${response.body}';
+        });
+      }else{
+        setState(() {
+          _data = 'failed to post data';
+        });
+      }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ElevatedButton(
-          onPressed: (){
-            postData();
-          }, 
-          child: Text('Send Post'),
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed:
+                postData,
+             
+              child: Text('Send Post'),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Text(_data),
+              ),
+          ],
+        ),
       ),
     );
   }
